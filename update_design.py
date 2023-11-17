@@ -2,11 +2,34 @@ import os
 import signal
 import subprocess
 from time import sleep
+import psutil
 
 import requests
 
 CURRENT_DESIGN = None
 DESIGN_PROCESS: subprocess.Popen = None
+
+
+def kill_other_control_processes():
+    # Define the target user and command
+    target_user = "daemon"
+    target_command = "python"
+
+    # Iterate through all running processes
+    for process in psutil.process_iter(attrs=['pid', 'name', 'username']):
+        try:
+            # Get process information
+            process_info = process.info()
+
+            # Check if the process belongs to the target user and is running the target command
+            if process_info['username'] == target_user and process_info['name'] == target_command:
+                print(f"Terminating process {process_info['pid']} (User: {target_user}, Command: {target_command})")
+
+                # Terminate the process
+                psutil.Process(process_info['pid']).terminate()
+
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
 
 
 # Function to handle Ctrl+C
@@ -54,6 +77,7 @@ def run_design_file(design_file_name, settings):
     CURRENT_DESIGN = design_file_name
     if DESIGN_PROCESS is not None:
         print("Terminating previous process")
+        kill_other_control_processes()
         DESIGN_PROCESS.terminate()
     DESIGN_PROCESS = subprocess.Popen(args)
 
