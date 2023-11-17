@@ -6,10 +6,10 @@ import requests
 
 
 def download_sample_base():
-    if os.path.exists("saved_designs/sample_base.py"):
+    if os.path.exists("saved_designs/samplebase.py"):
         return
     res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/design/sample_base")
-    file = open("saved_designs/sample_base.py", "w+")
+    file = open("saved_designs/samplebase.py", "w+")
     file.write(res.text)
     file.close()
 
@@ -53,5 +53,6 @@ def main_loop():
 
 
 if __name__ == "__main__":
-    os.mkdir("saved_designs")
+    if not os.path.exists("saved_designs"):
+        os.mkdir("saved_designs")
     main_loop()
