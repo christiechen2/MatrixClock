@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Function to handle Ctrl+C and exit gracefully
+exit_gracefully() {
+    echo "Received Ctrl+C. Exiting gracefully..."
+    exit 0
+}
+
+# Set up the trap to capture Ctrl+C and call the exit_gracefully function
+trap exit_gracefully SIGINT
+
 # Function to run the Python program with a timeout of 60 seconds
 run_python_program() {
     timeout 86400 python update_design.py
