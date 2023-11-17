@@ -52,6 +52,8 @@ def run_design_file(design_file_name, settings):
     for setting in settings:
         args.append("--" + setting + "=" + str(settings[setting]))
     CURRENT_DESIGN = design_file_name
+    if DESIGN_PROCESS is not None:
+        DESIGN_PROCESS.terminate()
     DESIGN_PROCESS = subprocess.Popen(args)
 
 
