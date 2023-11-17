@@ -1,10 +1,23 @@
 import os
+import signal
 import subprocess
 from time import sleep
 
 import requests
 
 CURRENT_DESIGN = None
+DESIGN_PROCESS = None
+
+
+# Function to handle Ctrl+C
+def handle_ctrl_c(signum, frame):
+    print("Ctrl+C detected. Terminating the process.")
+    if DESIGN_PROCESS is not None:
+        DESIGN_PROCESS.terminate()
+    exit(0)
+
+
+signal.signal(signal.SIGINT, handle_ctrl_c)
 
 
 def get_current_design():
@@ -29,6 +42,8 @@ def save_design_file(design_file_name):
 
 
 def run_design_file(design_file_name, settings):
+    global CURRENT_DESIGN
+    global DESIGN_PROCESS
     print(f"Running design: {design_file_name} with settings {settings}")
     # switch to saved_designs
     # run python saved_designs/design_file_name.py
@@ -36,9 +51,8 @@ def run_design_file(design_file_name, settings):
     args = ["python", design_file_name + ".py"]
     for setting in settings:
         args.append("--" + setting + "=" + str(settings[setting]))
-    global CURRENT_DESIGN
     CURRENT_DESIGN = design_file_name
-    subprocess.Popen(args)
+    DESIGN_PROCESS = subprocess.Popen(args)
 
 
 def update_and_run():
