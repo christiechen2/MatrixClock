@@ -6,7 +6,7 @@ from time import sleep
 import requests
 
 CURRENT_DESIGN = None
-DESIGN_PROCESS = None
+DESIGN_PROCESS: subprocess.Popen = None
 
 
 # Function to handle Ctrl+C
