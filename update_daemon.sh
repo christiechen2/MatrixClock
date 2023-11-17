@@ -2,7 +2,7 @@
 
 # Function to run the Python program with a timeout of 60 seconds
 run_python_program() {
-    timeout 300 python update_design.py
+    timeout 86400 python update_design.py
     # Replace 'your_python_script.py' with the actual name of your Python script
 }
 
@@ -16,7 +16,7 @@ pull_from_github() {
 while true; do
     run_python_program
     # Check if an hour has passed, and if so, pull from GitHub
-      if [[ $(date +%M) -eq 0 ]]; then
+      if [[ $(date +%H) -eq 0 ]]; then
           pull_from_github
       fi
 done
