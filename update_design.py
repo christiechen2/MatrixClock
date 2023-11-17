@@ -1,17 +1,8 @@
 import os
 import subprocess
-from time import sleep
 
+import dotenv
 import requests
-
-
-def download_sample_base():
-    if os.path.exists("saved_designs/samplebase.py"):
-        return
-    res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/design/sample_base")
-    file = open("saved_designs/samplebase.py", "w+")
-    file.write(res.text)
-    file.close()
 
 
 def get_current_design():
@@ -21,14 +12,20 @@ def get_current_design():
     return res["design"], res["settings"]
 
 
-def save_design_file(design_file_txt):
-    res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/design/" + design_file_txt)
-    file = open("saved_designs/" + design_file_txt + ".py", "w+")
+def save_design_file(design_file_name):
+    print(f"Saving design: {design_file_name}")
+    res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/design/" + design_file_name)
+    file = open("saved_designs/" + design_file_name + ".py", "w+")
+    if res.text == "Design not found":
+        print(f"Design not found: {design_file_name}")
+        return None
     file.write(res.text)
     file.close()
+    return "saved_designs/" + design_file_name + ".py"
 
 
 def run_design_file(design_file_name, settings):
+    print(f"Running design: {design_file_name} with settings {settings}")
     # switch to saved_designs
     # run python saved_designs/design_file_name.py
     # pass in settings as command line args
@@ -39,20 +36,21 @@ def run_design_file(design_file_name, settings):
     subprocess.run(args)
 
 
-def main_loop():
+def update_and_run():
     # get current design
     # get settings for current design
     # run current design with settings
     # repeat
-    while True:
-        design_file_name, settings = get_current_design()
-        download_sample_base()
-        save_design_file(design_file_name)
-        run_design_file(design_file_name, settings)
-        sleep(60)
+    design_file_name, settings = get_current_design()
+    print(f"Running design: {design_file_name} with settings {settings}")
+    if not os.path.exists("saved_designs/samplebase.py"):
+        save_design_file("samplebase")
+    save_design_file(design_file_name)
+    run_design_file(design_file_name, settings)
 
 
 if __name__ == "__main__":
+    dotenv.load_dotenv()
     if not os.path.exists("saved_designs"):
         os.mkdir("saved_designs")
-    main_loop()
+    update_and_run()
