@@ -2,7 +2,7 @@
 
 # Function to run the Python program with a timeout of 60 seconds
 run_python_program() {
-    timeout 60 python your_python_script.py
+    timeout 5 python your_python_script.py
     # Replace 'your_python_script.py' with the actual name of your Python script
 }
 
