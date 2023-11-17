@@ -53,6 +53,7 @@ def run_design_file(design_file_name, settings):
         args.append("--" + setting + "=" + str(settings[setting]))
     CURRENT_DESIGN = design_file_name
     if DESIGN_PROCESS is not None:
+        print("Terminating previous process")
         DESIGN_PROCESS.terminate()
     DESIGN_PROCESS = subprocess.Popen(args)
 
@@ -79,4 +80,4 @@ if __name__ == "__main__":
     os.chdir("saved_designs")
     while True:
         update_and_run()
-        sleep(30)
+        sleep(10)
