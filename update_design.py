@@ -17,13 +17,13 @@ def get_current_design():
 def save_design_file(design_file_name):
     print(f"Saving design: {design_file_name}")
     res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/design/" + design_file_name)
-    file = open("saved_designs/" + design_file_name + ".py", "w+")
+    file = open(design_file_name + ".py", "w+")
     if res.text == "Design not found":
         print(f"Design not found: {design_file_name}")
         return None
     file.write(res.text)
     file.close()
-    return "saved_designs/" + design_file_name + ".py"
+    return design_file_name + ".py"
 
 
 def run_design_file(design_file_name, settings):
@@ -31,10 +31,10 @@ def run_design_file(design_file_name, settings):
     # switch to saved_designs
     # run python saved_designs/design_file_name.py
     # pass in settings as command line args
-    os.chdir("saved_designs")
     args = ["python", design_file_name + ".py"]
     for setting in settings:
         args.append("--" + setting + "=" + str(settings[setting]))
+    global CURRENT_DESIGN
     CURRENT_DESIGN = design_file_name
     subprocess.Popen(args)
 
@@ -49,7 +49,7 @@ def update_and_run():
     if design_file_name == CURRENT_DESIGN:
         print("Designs are the same, not updating")
         return
-    if not os.path.exists("saved_designs/samplebase.py"):
+    if not os.path.exists("samplebase.py"):
         save_design_file("samplebase")
     save_design_file(design_file_name)
     run_design_file(design_file_name, settings)
@@ -58,6 +58,7 @@ def update_and_run():
 if __name__ == "__main__":
     if not os.path.exists("saved_designs"):
         os.mkdir("saved_designs")
+    os.chdir("saved_designs")
     while True:
         update_and_run()
         sleep(30)
