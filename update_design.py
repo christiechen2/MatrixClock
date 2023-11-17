@@ -15,6 +15,8 @@ def get_current_design():
 
 
 def save_design_file(design_file_name):
+    if os.path.exists(design_file_name + ".py"):
+        return design_file_name + ".py"
     print(f"Saving design: {design_file_name}")
     res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/design/" + design_file_name)
     file = open(design_file_name + ".py", "w+")
