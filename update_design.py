@@ -1,5 +1,6 @@
 import os
 import subprocess
+from time import sleep
 
 import requests
 
@@ -58,3 +59,4 @@ if __name__ == "__main__":
         os.mkdir("saved_designs")
     while True:
         update_and_run()
+        sleep(30)
