@@ -2,8 +2,8 @@ import os
 import signal
 import subprocess
 from time import sleep
-import psutil
 
+import psutil
 import requests
 
 CURRENT_DESIGN = None
@@ -18,15 +18,12 @@ def kill_other_control_processes():
     # Iterate through all running processes
     for process in psutil.process_iter(attrs=['pid', 'name', 'username']):
         try:
-            # Get process information
-            process_info = process.info()
-
             # Check if the process belongs to the target user and is running the target command
-            if process_info['username'] == target_user and process_info['name'] == target_command:
-                print(f"Terminating process {process_info['pid']} (User: {target_user}, Command: {target_command})")
+            if process['username'] == target_user and process['name'] == target_command:
+                print(f"Terminating process {process['pid']} (User: {target_user}, Command: {target_command})")
 
                 # Terminate the process
-                psutil.Process(process_info['pid']).terminate()
+                psutil.Process(process['pid']).terminate()
 
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
