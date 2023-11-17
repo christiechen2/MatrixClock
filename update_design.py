@@ -49,7 +49,6 @@ def update_and_run():
     if design_file_name == CURRENT_DESIGN:
         print("Designs are the same, not updating")
         return
-    print(f"Running design: {design_file_name} with settings {settings}")
     if not os.path.exists("saved_designs/samplebase.py"):
         save_design_file("samplebase")
     save_design_file(design_file_name)
