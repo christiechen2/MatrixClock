@@ -13,7 +13,10 @@ def get_data():
     }
     return jsonify(data)
 
+@app.route('/', methods=['GET'])
+def get_root():
+    return "Hello, World!"
+
 
 if __name__ == '__main__':
-    # Run the Flask app on a local development server
-    app.run(debug=True)
+    app.run()
