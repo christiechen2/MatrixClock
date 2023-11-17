@@ -1,8 +1,9 @@
 import os
 import subprocess
 
-import dotenv
 import requests
+
+CURRENT_DESIGN = None
 
 
 def get_current_design():
@@ -33,7 +34,8 @@ def run_design_file(design_file_name, settings):
     args = ["python", design_file_name + ".py"]
     for setting in settings:
         args.append("--" + setting + "=" + str(settings[setting]))
-    subprocess.run(args)
+    CURRENT_DESIGN = design_file_name
+    subprocess.Popen(args)
 
 
 def update_and_run():
@@ -42,6 +44,8 @@ def update_and_run():
     # run current design with settings
     # repeat
     design_file_name, settings = get_current_design()
+    if design_file_name == CURRENT_DESIGN:
+        return
     print(f"Running design: {design_file_name} with settings {settings}")
     if not os.path.exists("saved_designs/samplebase.py"):
         save_design_file("samplebase")
@@ -50,7 +54,7 @@ def update_and_run():
 
 
 if __name__ == "__main__":
-    dotenv.load_dotenv()
     if not os.path.exists("saved_designs"):
         os.mkdir("saved_designs")
-    update_and_run()
+    while True:
+        update_and_run()
