@@ -12,21 +12,11 @@ DESIGN_PROCESS: subprocess.Popen = None
 
 def kill_other_control_processes():
     # Define the target user and command
+    # run sh command 'sudo pkill -u daemon -f "python"'
     target_user = "daemon"
     target_command = "python"
 
-    # Iterate through all running processes
-    for process in psutil.process_iter(attrs=['pid', 'name', 'username']):
-        try:
-            # Check if the process belongs to the target user and is running the target command
-            if process['username'] == target_user and process['name'] == target_command:
-                print(f"Terminating process {process['pid']} (User: {target_user}, Command: {target_command})")
-
-                # Terminate the process
-                psutil.Process(process['pid']).terminate()
-
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
+    subprocess.Popen(["sudo", "pkill", "-u", target_user, "-f", target_command])
 
 
 # Function to handle Ctrl+C
