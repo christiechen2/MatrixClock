@@ -1,9 +1,7 @@
 import os
-import signal
 import subprocess
 from time import sleep
 
-import psutil
 import requests
 
 CURRENT_DESIGN = None
@@ -17,17 +15,6 @@ def kill_other_control_processes():
     target_command = "python"
 
     subprocess.Popen(["sudo", "pkill", "-u", target_user, "-f", target_command])
-
-
-# Function to handle Ctrl+C
-def handle_ctrl_c(signum, frame):
-    print("Ctrl+C detected. Terminating the process.")
-    if DESIGN_PROCESS is not None:
-        DESIGN_PROCESS.terminate()
-    exit(0)
-
-
-signal.signal(signal.SIGINT, handle_ctrl_c)
 
 
 def get_current_design():
@@ -63,9 +50,7 @@ def run_design_file(design_file_name, settings):
         args.append("--" + setting + "=" + str(settings[setting]))
     CURRENT_DESIGN = design_file_name
     if DESIGN_PROCESS is not None:
-        print("Terminating previous process")
         kill_other_control_processes()
-        DESIGN_PROCESS.terminate()
     DESIGN_PROCESS = subprocess.Popen(args)
 
 
