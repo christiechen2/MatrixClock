@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/current_design', methods=['GET'])
 def get_daily():
     data = {
-        'design': 'sample_design',
+        'design': 'running_text',
         'settings': {
             'led-rows': 64,
             'led-cols': 64,
