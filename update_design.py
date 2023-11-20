@@ -21,8 +21,17 @@ def get_current_design():
     # request from https://matrix-clock-906b21f7e636.herokuapp.com/current_design
     res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/current_design")
     res = res.json()
-    return res["design"], res["settings"]
+    return res["design"], res["settings"], res['dependencies']
 
+def save_design_dependencies(dependencies):
+    for dependency in dependencies:
+        if os.path.exists(dependency):
+            continue
+        print(f"Saving dependency: {dependency}")
+        res = requests.get("https://matrix-clock-906b21f7e636.herokuapp.com/dependency/" + dependency)
+        file = open(dependency, "w+")
+        file.write(res.text)
+        file.close()
 
 def save_design_file(design_file_name):
     if os.path.exists(design_file_name + ".py"):
@@ -59,7 +68,7 @@ def update_and_run():
     # get settings for current design
     # run current design with settings
     # repeat
-    design_file_name, settings = get_current_design()
+    design_file_name, settings, design_deps = get_current_design()
     print(f"Currently displayed design: {CURRENT_DESIGN}, new design: {design_file_name}")
     if design_file_name == CURRENT_DESIGN:
         print("Designs are the same, not updating")
@@ -67,6 +76,7 @@ def update_and_run():
     if not os.path.exists("samplebase.py"):
         save_design_file("samplebase")
     save_design_file(design_file_name)
+    save_design_dependencies(design_deps)
     run_design_file(design_file_name, settings)
 
 
